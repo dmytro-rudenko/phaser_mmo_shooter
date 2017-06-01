@@ -1,0 +1,11 @@
+{
+  "name": "c.s",
+  "version": "1.0.0",
+  "dependencies": {
+    "socket.io": "1.7.2",
+    "express": "4.14.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
