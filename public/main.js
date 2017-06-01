@@ -57,7 +57,7 @@ function create() {
 
     socket.on("player_rotation_update", function(data) {
         data = JSON.parse(data);
-        players[data.id].player.body.rotation = data.value;
+        players[data.id].player.rotation = data.value;
     }); //вращение вокруг своей оси, ориентируясь на курсор
 
     socket.on("player_position_update", function(data) {

@@ -30,7 +30,6 @@ io.on("connection", function(socket) {  //подключение нового и
             "id": socket.id,
             "value": data
         }));
-        players[socket.id].rotation = data;
     }); // отвечает за вращение игрока вокруг собственной оси
 
 
