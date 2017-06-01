@@ -71,10 +71,7 @@ function create() {
     }); //обновляем положение игроков
 
     socket.on('player_fire_add', function(id) {
-        if (live &&  id == socket.id){
-            players[id].weapon.fire();
-        }
-        
+            players[id].weapon.fire();        
     }); //ввзываем выстрелы 
 
     game.input.onDown.add(function() {
