@@ -69,8 +69,10 @@ io.on("connection", function(socket) {  //подключение нового и
 		
 		io.sockets.emit('clean_dead_player', victimId);
 		players[victimId].live = false;
+        io.sockets.connected[victimId].emit('gameOver', 'Game Over');
 		
 	}); // смерть при попадании
+
 
     socket.on('disconnect', function() {
         console.log("an user disconnected " + socket.id);

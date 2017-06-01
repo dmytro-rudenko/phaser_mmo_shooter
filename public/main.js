@@ -30,7 +30,6 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-
     game.time.advancedTiming = true;
     game.time.desiredFps = 60;
     game.time.slowMotion = 0;
@@ -71,50 +70,54 @@ function create() {
 
     }); //обновляем положение игроков
 
-    socket.on('player_fire_add', function (id) {
-        players[id].weapon.fire();
-    }); //выполняем выстрелы 
+    socket.on('player_fire_add', function(id) {
+        if (live &&  id == socket.id){
+            players[id].weapon.fire();
+        }
+        
+    }); //ввзываем выстрелы 
 
     game.input.onDown.add(function() {
         socket.emit("shots_fired", socket.id);
     }); //вызываем выстрелы
 
-    socket.on('clean_dead_player', function (victimId) {
+    socket.on('clean_dead_player', function(victimId) {
         if (victimId == socket.id) {
             live = false;
         }
-        players[victimId].player.kill();
         
+        socket.on("gameOver", function(data){
+            text = game.add.text(width / 2, height / 2, data, { font: "32px Arial", fill: "#ffffff", align: "center" });
+            text.fixedToCamera = true;
+            text.anchor.setTo(.5, .5);
+        });
+        players[victimId].player.kill();
+
     }); //смерть от выстрелов
 
     socket.on('player_disconnect', function(id) {
         players[id].player.kill();
     }); //убираем отключившихся игроков
 
-
-    
-
     keybord = game.input.keyboard.createCursorKeys(); //инициализируем клавиатуру
 }
 // 
 
-
 function update() {
-
-    if (live) {
-        
+    if (live == true) {
         players[socket.id].player.rotation = game.physics.arcade.angleToPointer(players[socket.id].player);
         socket.emit("player_rotation", players[socket.id].player.rotation);
+        setCollisions(); //функция вызывающаяся при столкновении пули с игроком
+        characterController(); //управление
     }
-    setCollisions(); //функция при столкновении пули с игроком
-    characterController();
-}//Проверка столкновения
+}
 
 
 function bulletHitHandler(player, bullet) {
     socket.emit("player_killed", player.id);
+
     bullet.destroy();
-}//функция при столкновении пули с игроком
+} //функция при столкновении пули с игроком
 
 function setCollisions() {
     for (let x in players) {
@@ -124,8 +127,7 @@ function setCollisions() {
             }
         }
     }
-}//Проверка столкновения
-
+} //Проверка столкновения
 
 function sendPosition(character) {
     socket.emit("player_move", JSON.stringify({
@@ -162,7 +164,7 @@ function render() {
 
 
 
-function addPlayer(playerId, x, y){
+function addPlayer(playerId, x, y) {
     player = game.add.sprite(x, y, "unit");
     game.physics.arcade.enable(player);
     player.smoothed = false;
@@ -180,4 +182,3 @@ function addPlayer(playerId, x, y){
     players[playerId] = { player, weapon };
     game.camera.follow(players[socket.id].player, );
 } //создаем игрока и даем ему ствол :)
-
