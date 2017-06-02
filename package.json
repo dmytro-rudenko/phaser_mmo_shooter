@@ -1,5 +1,5 @@
 {
-  "name": "c.s",
+  "name": "mmo_phaser_shooter",
   "version": "1.0.0",
   "dependencies": {
     "socket.io": "1.7.2",
