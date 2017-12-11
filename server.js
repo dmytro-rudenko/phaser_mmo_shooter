@@ -4,11 +4,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 var players = {};
-io.on("connection", function(socket) {  //подключение нового игрока
+io.on("connection", function(socket) { //подключение нового игрока
     console.log('an user connected ' + socket.id);
     players[socket.id] = {
-        "x": Math.floor(Math.random(1) * 750),
-        "y": Math.floor(Math.random(1) * 550),
+        "x": Math.floor(Math.random(1) * 150),
+        "y": Math.floor(Math.random(1) * 150),
         "width": 32,
         "height": 32,
         "size": 1,
@@ -18,7 +18,7 @@ io.on("connection", function(socket) {  //подключение нового и
         "id": socket.id,
         "player": players[socket.id]
     })); //отправляет на клиент данные нового юнита
-    socket.emit('add_players', JSON.stringify(players));// отправляет на клиент данные нового юнита, если игроков более одного
+    socket.emit('add_players', JSON.stringify(players)); // отправляет на клиент данные нового юнита, если игроков более одного
 
     socket.on('player_rotation', function(data) {
         io.sockets.emit('player_rotation_update', JSON.stringify({
@@ -50,28 +50,24 @@ io.on("connection", function(socket) {  //подключение нового и
         }
         io.sockets.emit('player_position_update', JSON.stringify(data));
     }); // движение игрока
-
     socket.on('shots_fired', function(id) {
         io.sockets.emit("player_fire_add", id);
     }); // выстрелы
-
-    socket.on('player_killed', function (victimId) {		
-		io.sockets.emit('clean_dead_player', victimId);
-		players[victimId].live = false;
-        io.sockets.connected[victimId].emit('gameOver', 'Game Over');		
-	}); // смерть при попадании
-
+    socket.on('player_killed', function(victimId) {
+        io.sockets.emit('clean_dead_player', victimId);
+        players[victimId].live = false;
+        io.sockets.connected[victimId].emit('gameOver', 'Game Over');
+    }); // смерть при попадании
     socket.on('disconnect', function() {
         console.log("an user disconnected " + socket.id);
         delete players[socket.id];
         io.sockets.emit('player_disconnect', socket.id);
     });
 });
-
 app.use("/", express.static(__dirname + "/public")); //пути к файлам клиента
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/public/index.html"); // главная страница
-}); 
+});
 
 http.listen(port, function() {
     console.log('listening on *:' + port); // запуск сервера
