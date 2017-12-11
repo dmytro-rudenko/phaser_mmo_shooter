@@ -2,10 +2,20 @@
   "name": "mmo_phaser_shooter",
   "version": "1.0.0",
   "dependencies": {
-    "socket.io": "1.7.2",
-    "express": "4.14.1"
+    "express": "4.14.1",
+    "socket.io": "1.7.2"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "webpack -p",
+    "watch": "webpack --watch"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "jshint": "^2.9.5",
+    "jshint-loader": "^0.8.4",
+    "webpack": "^3.10.0"
   }
 }
